@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
 
 let dbURI = process.env.DB_URI;
-if ('DB_PORT' in process.env) dbURI += ':' + process.env.DB_PORT;
 
 let options = {
     useNewUrlParser: true
 };
-options.dbName = process.env.DB_NAME;
-if ('DB_USER' in process.env) options.user = process.env.DB_USER;
-if ('DB_PASSWORD' in process.env) options.pass = process.env.DB_PASSWORD;
 
 mongoose.connect(dbURI, options);
 
