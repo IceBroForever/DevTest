@@ -26,36 +26,36 @@ router.post('/register', async function (req, res, next) {
     }
 });
 
-router.post('/login', passport.authenticate('basic', { session: false }), async function (req, res, next) {
-    try {
-        return res.status(200).json({
-            login: req.user.login,
-            accessToken: await generateAccessToken(req.user),
-            refreshToken: await generateRefreshToken(req.user)
-        });
-    } catch (error) {
-        return next({
-            code: 500,
-            error
-        })
-    }
-});
+router.get('/login', passport.authenticate('basic', { session: false }),
+    async function (req, res, next) {
+        try {
+            return res.status(200).json({
+                login: req.user.login,
+                accessToken: await generateAccessToken(req.user),
+                refreshToken: await generateRefreshToken(req.user)
+            });
+        } catch (error) {
+            return next({
+                code: 500,
+                error
+            })
+        }
+    });
 
-router.post('/refreshTokens', async function (req, res, next) {
-    let { refreshToken } = req.body;
-    try {
-        let user = await verifyToken(refreshToken);
-        return res.status(200).json({
-            login: user.login,
-            accessToken: await generateAccessToken(user),
-            refreshToken: await generateRefreshToken(user)
-        });
-    } catch (error) {
-        return next({
-            code: 401,
-            error
-        });
-    }
-});
+router.get('/refreshTokens', passport.authenticate('refresh', { session: false }),
+    async function (req, res, next) {
+        try {
+            return res.status(200).json({
+                login: req.user.login,
+                accessToken: await generateAccessToken(user),
+                refreshToken: await generateRefreshToken(user)
+            });
+        } catch (error) {
+            return next({
+                code: 401,
+                error
+            });
+        }
+    });
 
 module.exports = router;

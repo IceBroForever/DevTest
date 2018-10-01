@@ -7,7 +7,7 @@ const express = require('express'),
     BasicStrategy = require('passport-http').BasicStrategy,
     BearerStrategy = require('passport-http-bearer').Strategy,
     createHash = require('./utils/hash'),
-    { verifyToken } = require('./utils/jwt');
+    { verifyAccessToken, verifyRefreshToken } = require('./utils/jwt');
 
 const usersDB = require('./db/users');
 
@@ -41,9 +41,24 @@ passport.use(new BasicStrategy(
     }
 ));
 
-passport.use(new BearerStrategy(
+passport.use('access', new BearerStrategy(
     function (token, done) {
-        verifyToken(token)
+        verifyAccessToken(token)
+            .then(user => {
+                done(null, user);
+            })
+            .catch(error => {
+                done({
+                    code: 409,
+                    error
+                }, false)
+            });
+    }
+));
+
+passport.use('refresh', new BearerStrategy(
+    function (token, done) {
+        verifyRefreshToken(token)
             .then(user => {
                 done(null, user);
             })

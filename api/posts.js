@@ -15,7 +15,7 @@ router.get('/', async function (req, res, next) {
 });
 
 router.post('/send',
-    passport.authenticate(['basic', 'bearer'], { session: false }),
+    passport.authenticate(['basic', 'access'], { session: false }),
     async function (req, res, next) {
         try {
             await postsDB.add({
