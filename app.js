@@ -6,11 +6,13 @@ const express = require('express'),
     passport = require('passport'),
     BasicStrategy = require('passport-http').BasicStrategy,
     BearerStrategy = require('passport-http-bearer').Strategy,
-    createHash = require('./utils/hash');
+    createHash = require('./utils/hash'),
+    { verifyToken } = require('./utils/jwt');
 
 const usersDB = require('./db/users');
 
-const authRouter = require('./api/auth');
+const authRouter = require('./api/auth'),
+    postsRouter = require('./api/posts');
 
 const app = express();
 
@@ -23,8 +25,14 @@ passport.use(new BasicStrategy(
     function (login, password, done) {
         usersDB.get(login)
             .then(user => {
-                if (user === null) return done('No such user', false);
-                if (user.passwordHash !== createHash(password)) return done('Wrong password', false);
+                if (user === null) return done({
+                    code: 401,
+                    error: new Error('No such user')
+                }, false);
+                if (user.passwordHash !== createHash(password)) return done({
+                    code: 409,
+                    error: new Error('Wrong password')
+                }, false);
                 return done(null, user);
             })
             .catch(error => {
@@ -35,11 +43,26 @@ passport.use(new BasicStrategy(
 
 passport.use(new BearerStrategy(
     function (token, done) {
-
+        verifyToken(token)
+            .then(user => {
+                done(null, user);
+            })
+            .catch(error => {
+                done({
+                    code: 409,
+                    error
+                }, false)
+            });
     }
 ));
 
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postsRouter);
+
+app.use(function (errorDesc, req, res, next) {
+    let { code, error } = errorDesc;
+    return res.status(code).json({ error: error.message });
+});
 
 app.listen(process.env.PORT, () => {
     console.log("Server started on port " + process.env.PORT);

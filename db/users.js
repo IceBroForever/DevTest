@@ -5,7 +5,13 @@ let userSchema = new Schema({
     login: {
         type: String,
         required: true,
-        unique: true
+        unique: [true, "User already exists"],
+        validate: {
+            validator: function(value) {
+                return /^[A-Za-z0-9]+$/g.test(value)
+            },
+            message: props => `${props.value} is not valid`
+        }
     },
     passwordHash: {
         type: String,
@@ -30,7 +36,7 @@ async function add(user) {
     try {
         return (await User.create(user)).toObject();
     } catch (error) {
-        throw new Error('User already exists');
+        throw new Error(error.message);
     }
 }
 

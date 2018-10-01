@@ -10,7 +10,7 @@ async function generateToken(user, expiresIn) {
             expiresIn
         },
         (error, token) => {
-            if(error) reject(error);
+            if(error) reject(new Error(error.message));
             resolve(token);
         });
     });
@@ -27,7 +27,7 @@ async function generateRefreshToken(user) {
 async function verifyToken(token) {
     return new Promise((resolve, reject) => {
         jwt.verify(token, process.env.SECRET, (error, decoded) => {
-            if(error) reject(error);
+            if(error) reject(new Error(error.message));
             resolve(decoded);
         });
     });

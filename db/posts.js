@@ -12,7 +12,7 @@ let postSchema = new Schema({
     },
     text: {
         type: String,
-        maxlength: 200
+        maxlength: [200, "Text is longer then 200 symbols"]
     }
 });
 
@@ -20,7 +20,8 @@ postSchema.set('toObject', {
     transform: function (doc, ret, options) {
         delete ret._id;
         return ret;
-    }
+    },
+    versionKey: false
 });
 
 postSchema.statics.findByAuthor = function (author) {
@@ -30,10 +31,10 @@ postSchema.statics.findByAuthor = function (author) {
 const Post = dbDriver.model('Post', postSchema);
 
 async function add(post) {
-    try{
+    try {
         return (await Post.create(post)).toObject();
     } catch (error) {
-        throw new Error("Text is longer then 200 symbols");
+        throw new Error(error.message);
     }
 }
 
