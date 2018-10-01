@@ -45,7 +45,7 @@ async function getAll() {
 }
 
 async function findByAuthor(author) {
-    let post = Post.findByAuthor(author);
+    let posts = Post.findByAuthor(author);
     return posts.map(post => {
         return post.toObject();
     });
