@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon .",
-    "start": "node ."
+    "start": "node .",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,9 @@
     "passport-http-bearer": "^1.0.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.4"
   }
 }

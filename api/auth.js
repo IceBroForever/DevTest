@@ -47,8 +47,8 @@ router.get('/refreshTokens', passport.authenticate('refresh', { session: false }
         try {
             return res.status(200).json({
                 login: req.user.login,
-                accessToken: await generateAccessToken(user),
-                refreshToken: await generateRefreshToken(user)
+                accessToken: await generateAccessToken(req.user),
+                refreshToken: await generateRefreshToken(req.user)
             });
         } catch (error) {
             return next({

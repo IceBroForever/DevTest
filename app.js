@@ -79,6 +79,10 @@ app.use(function (errorDesc, req, res, next) {
     return res.status(code).json({ error: error.message });
 });
 
-app.listen(process.env.PORT, () => {
-    console.log("Server started on port " + process.env.PORT);
-});
+if(require.main === module) {
+    app.listen(process.env.PORT, () => {
+        console.log("Server started on port " + process.env.PORT);
+    });
+}
+
+module.exports = app;
