@@ -5,7 +5,7 @@ const postsDB = require('../db/posts');
 
 router.get('/', async function (req, res, next) {
     try {
-        return res.status(400).json(await postsDB.getAll());
+        return res.status(200).json(await postsDB.getAll());
     } catch (error) {
         return next({
             code: 500,

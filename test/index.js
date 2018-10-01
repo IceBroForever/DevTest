@@ -6,7 +6,7 @@ const chai = require('chai'),
 chai.use(chaiHttp);
 
 let credentials = {
-    login: '1234567',
+    login: 'qwerty',
     password: 'password'
 };
 
