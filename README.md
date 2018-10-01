@@ -1,4 +1,4 @@
-# DevTest
+# Test project "Public chat"
 
 ### Documentation
 
